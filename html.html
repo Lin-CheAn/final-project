@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <title>音樂推薦互動平台</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="header">
+    <img src="spotify.png.jpg" alt="Spotify Logo">
+    <h1>音樂推薦互動平台</h1>
+  </div>
+
+  <div class="container">
+    <!-- 推薦清單區（未來會接後端推薦回傳） -->
+    <div class="box">
+      <h2>推薦清單</h2>
+      <ul id="recommend-list">
+        <li>尚無推薦</li>
+      </ul>
+    </div>
+
+    <!-- 隨機推薦 20 首 -->
+    <div class="box">
+      <h2>隨機推薦 20 首</h2>
+      <p>請點選你喜歡的歌曲進行評分：</p>
+      <div id="song-list"></div>
+      <div id="submit-area"></div>
+    </div>
+
+    <!-- 備用區 -->
+    <div class="box">
+      <h2>備用功能區</h2>
+      <p>未來可用於播放紀錄、偏好設定等</p>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
