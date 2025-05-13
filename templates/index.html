@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <title>音樂推薦互動平台</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+  <div class="header">
+    <img src="{{ url_for('static', filename='images/spotify.png.jpg') }}" alt="Spotify Logo">
+    <h1>音樂推薦互動平台</h1>
+  </div>
+
+  <div class="container">
+    <!-- 🎵 初始隨機推薦區塊 -->
+    <div class="box" id="initial-box">
+      <h2>隨機推薦 20 首</h2>
+      <p>請點選你喜歡的歌曲進行評分：</p>
+
+      <!-- 傳遞歌曲資料給 script.js 使用 -->
+      <div id="song-list" data-tracks='{{ tracks | tojson | safe }}'></div>
+
+
+    </div>
+
+    <!-- 🎯 推薦清單區塊（初始隱藏） -->
+    <div class="box" id="recommend-box" style="display: none;">
+      <h2>推薦清單</h2>
+      <div id="recommend-list"></div>
+    </div>
+
+    <!-- 💾 評分紀錄區塊（初始隱藏） -->
+    <div class="box" id="history-box" style="display: none;">
+      <h2>評分紀錄</h2>
+      <div id="rating-history">尚無評分紀錄</div>
+    </div>
+  </div>
+        <!-- 送出按鈕 -->
+      <div id="submit-area">
+        <button id="submit-button">送出評分</button>
+      </div>
+
+  <!-- 載入前端互動腳本 -->
+  <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>
