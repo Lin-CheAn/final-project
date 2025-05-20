@@ -16,11 +16,7 @@
     <div class="box" id="initial-box">
       <h2>隨機推薦 20 首</h2>
       <p>請點選你喜歡的歌曲進行評分：</p>
-
-      <!-- 傳遞歌曲資料給 script.js 使用 -->
       <div id="song-list" data-tracks='{{ tracks | tojson | safe }}'></div>
-
-
     </div>
 
     <!-- 🎯 推薦清單區塊（初始隱藏） -->
@@ -33,12 +29,19 @@
     <div class="box" id="history-box" style="display: none;">
       <h2>評分紀錄</h2>
       <div id="rating-history">尚無評分紀錄</div>
+  <div style="margin-top: 1em;">
+    <button id="clear-button" style="background: crimson; color: white;">清除歷史紀錄</button>
+  </div>
+
     </div>
   </div>
-        <!-- 送出按鈕 -->
-      <div id="submit-area">
-        <button id="submit-button">送出評分</button>
-      </div>
+
+  <!-- 送出按鈕 -->
+  <div id="submit-area">
+    <button id="submit-button">送出評分</button>
+  </div>
+        <!-- 🔘 清除歷史紀錄按鈕 -->
+
 
   <!-- 載入前端互動腳本 -->
   <script src="{{ url_for('static', filename='js/script.js') }}"></script>
