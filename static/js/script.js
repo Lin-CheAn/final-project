@@ -1,15 +1,17 @@
+// ✅ 初始設定與清除歷史
+localStorage.removeItem("ratingHistoryList");
+
 const tracksData = JSON.parse(document.getElementById("song-list").dataset.tracks);
 const list = document.getElementById('song-list');
 const ratings = {};
 let hasSubmitted = false;
 
-// 建立 trackId → name 對應表（初始資料）
+// 建立 trackId → name 對應表
 const trackMap = {};
 tracksData.forEach(song => {
   trackMap[song.id] = song.name;
 });
 
-// 建立歌曲區塊（包含播放器與評分）
 function createSongElement(song, enableRating = true) {
   const songId = song.id || song.track_id;
   const item = document.createElement('div');
@@ -17,7 +19,9 @@ function createSongElement(song, enableRating = true) {
 
   const title = document.createElement('div');
   title.className = 'song-name';
-  title.textContent = song.name || `${song.track_name} - ${song.artist_name}`;
+  const displayName = song.name || `${song.track_name} - ${song.artist_name}`;
+  title.textContent = displayName;
+  title.dataset.id = songId;
 
   const playerBox = document.createElement('div');
   playerBox.className = 'player-box';
@@ -80,20 +84,27 @@ function createSongElement(song, enableRating = true) {
   return item;
 }
 
-// 顯示初始推薦曲目
 tracksData.forEach(song => {
   const item = createSongElement(song, true);
   list.appendChild(item);
 });
 
-// 送出邏輯
 document.getElementById('submit-button').onclick = () => {
   if (Object.keys(ratings).length === 0) {
     alert("請先對至少一首歌曲進行評分！");
     return;
   }
 
-  // ✅ 儲存本次評分快照
+  // 🔁 從頁面中補全名稱對應（防止漏失）
+  document.querySelectorAll('.song-item').forEach(item => {
+    const titleDiv = item.querySelector('.song-name');
+    const name = titleDiv.textContent;
+    const id = titleDiv.dataset.id;
+    if (id && name) {
+      trackMap[id] = name;
+    }
+  });
+
   const fullHistory = JSON.parse(localStorage.getItem("ratingHistoryList")) || [];
   fullHistory.push({ ...ratings });
   localStorage.setItem("ratingHistoryList", JSON.stringify(fullHistory));
@@ -111,7 +122,9 @@ document.getElementById('submit-button').onclick = () => {
       recommendList.innerHTML = '';
 
       data.forEach(song => {
-        trackMap[song.track_id] = `${song.track_name} - ${song.artist_name}`; // ✅ 補入新歌曲對照
+        const songId = song.track_id;
+        const name = `${song.track_name} - ${song.artist_name}`;
+        trackMap[songId] = name;
         const item = createSongElement(song, true);
         recommendList.appendChild(item);
       });
@@ -131,7 +144,6 @@ document.getElementById('submit-button').onclick = () => {
     });
 };
 
-// ✅ 分批顯示所有評分紀錄
 function updateRatingHistory() {
   const container = document.getElementById("rating-history");
   const historyList = JSON.parse(localStorage.getItem("ratingHistoryList")) || [];
@@ -145,13 +157,14 @@ function updateRatingHistory() {
 
   historyList.forEach((entry, index) => {
     const title = document.createElement("h4");
-    title.textContent = `【第 ${index + 1} 次評分】`;
+    title.textContent = `【第 ${index + 1} 次評分紀錄】`;
     allContent.appendChild(title);
 
     const ul = document.createElement("ul");
     Object.entries(entry).forEach(([trackId, score]) => {
+      const name = trackMap[trackId] || trackId;
       const li = document.createElement("li");
-      li.textContent = `${trackMap[trackId] || trackId}：${score} 星`;
+      li.textContent = `${name}：${score} 星`;
       ul.appendChild(li);
     });
 
@@ -163,3 +176,16 @@ function updateRatingHistory() {
 }
 
 window.onload = updateRatingHistory;
+// 🔘 清除歷史紀錄功能
+document.addEventListener('DOMContentLoaded', () => {
+  const clearButton = document.getElementById('clear-button');
+  if (clearButton) {
+    clearButton.onclick = () => {
+      if (confirm("確定要清除所有評分紀錄？")) {
+        localStorage.removeItem("ratingHistoryList");
+        updateRatingHistory();
+        alert("✅ 所有歷史紀錄已清除！");
+      }
+    };
+  }
+});
